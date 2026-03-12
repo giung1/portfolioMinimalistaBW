@@ -4,7 +4,7 @@ import Project from "../components/Project.astro";
 ---
 
 <BaseLayout>
-  <section class="grid grid-cols-2 p-20 gap-20">
+  <section class="grid grid-cols-1 md:grid-cols-2 p-6 md:p-20 gap-10 md:gap-20">
     <Project
       title="MARTINA (2025)"
       image="/images/5.webp"
@@ -30,7 +30,7 @@ import Project from "../components/Project.astro";
       iglink="optica.lujan_"
     />
     <Project
-      class="col-span-2 w-[calc(50%-2.5rem)] justify-self-center"
+      class="col-span-1 md:col-span-2 md:w-[calc(50%-2.5rem)] justify-self-stretch md:justify-self-center"
       title="Siamo Tienda"
       image="/images/4.webp"
       description="Trabajo de creación de contenido para redes sociales de una tienda de indumentaria. Incluyó la producción fotográfica de prendas y el diseño de placas gráficas para las publicaciones. 2023-2024"
