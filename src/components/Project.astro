@@ -1,0 +1,131 @@
+---
+const {
+  title,
+  image,
+  description,
+  link,
+  iglink,
+  class: className,
+} = Astro.props;
+const modalId = `modal-${title.replace(/\s+/g, "-").toLowerCase()}`;
+---
+
+<div
+  class:list={[
+    "group relative overflow-hidden cursor-pointer project-trigger",
+    className,
+  ]}
+  data-modal={modalId}
+>
+  <img
+    src={image}
+    alt={title}
+    class="w-full h-full object-cover group-hover:scale-110 transition-all duration-800"
+  />
+  <div
+    class="absolute inset-0 bg-black opacity-0 group-hover:opacity-80 transition-opacity duration-800 pointer-events-none"
+  >
+  </div>
+  <div
+    class="absolute inset-0 flex items-center justify-center pointer-events-none"
+  >
+    <h1
+      class="text-2xl md:text-3xl text-white font-montserrat opacity-0 group-hover:opacity-100 transition-opacity duration-800 text-center px-4"
+    >
+      {title}
+    </h1>
+  </div>
+</div>
+
+<div
+  id={modalId}
+  class="fixed pb-20 inset-0 z-100 hidden items-center justify-center bg-black/80 backdrop-blur-xs"
+>
+  <div
+    class="font-montserrat relative max-w-2xl w-full mx-4 bg-neutral-950 border shadow-2xl"
+  >
+    <button
+      data-close={modalId}
+      class="close-btn absolute top-4 right-4 text-white/60 hover:text-white text-2xl leading-none transition-colors"
+      aria-label="Cerrar"
+    >
+      ✕
+    </button>
+
+    <img src={image} alt={title} class="w-full max-h-60 object-cover" />
+
+    <div class="p-8">
+      <h2 class="text-white text-3xl font-light tracking-widest uppercase mb-4">
+        {title}
+      </h2>
+      <p class="text-white/60 text-sm leading-relaxed tracking-wide">
+        {description}
+      </p>
+      <a
+        target="_blank"
+        href={iglink ? "https://www.instagram.com/" + iglink : link}
+        class="block text-right font-montserrat text-white underline mt-5 hover:text-white/30 duration-300"
+      >
+        Ver más >
+      </a>
+    </div>
+  </div>
+</div>
+
+<script>
+  const nav = document.querySelector("nav");
+  const footer = document.querySelector("footer");
+
+  function openModal(modal) {
+    if (!modal) return;
+    nav?.classList.add("blur-xs");
+    footer?.classList.add("blur-xs");
+    document.body.style.overflow = "hidden";
+    modal.classList.remove("hidden", "pb-20");
+    modal.classList.add("flex");
+  }
+
+  function closeModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (!modal) return;
+    nav?.classList.remove("blur-xs");
+    footer?.classList.remove("blur-xs");
+    document.body.style.overflow = "";
+    modal.classList.add("hidden", "pb-20");
+    modal.classList.remove("flex");
+  }
+
+  document.querySelectorAll(".project-trigger").forEach((trigger) => {
+    trigger.addEventListener("click", () => {
+      const modalId = trigger.dataset.modal;
+      if (!modalId) return;
+      const modal = document.getElementById(modalId);
+      if (!modal) return;
+      nav?.classList.add("blur-xs");
+      footer?.classList.add("blur-xs");
+      document.body.style.overflow = "hidden";
+      modal.classList.remove("hidden", "pb-20");
+      modal.classList.add("flex");
+    });
+  });
+
+  document.querySelectorAll(".close-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const modalId = btn.dataset.close;
+      if (modalId) {
+        closeModal(modalId);
+      }
+    });
+  });
+
+  document.querySelectorAll("[id^='modal-']").forEach((modal) => {
+    // Mover el modal directamente al body para escapar de cualquier CSS transform del padre
+    document.body.appendChild(modal);
+
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) {
+        closeModal(modal.id);
+      }
+    });
+  });
+</script>
