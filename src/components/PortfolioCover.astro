@@ -1,13 +1,13 @@
 ---
-const { pageTitle } = Astro.props;
+const { pageTitle, image, link } = Astro.props;
 ---
 
 <section class="flex flex-col items-center justify-center p-20 overflow-hidden">
-  <div class="group relative w-5/6 aspect-square overflow-hidden">
+  <a href={link} class="group relative w-5/6 h-5/6 overflow-hidden">
     <img
-      src={`/images/${pageTitle}.jpg`}
+      src={`/images/${image}.webp`}
       class="h-full w-full object-cover group-hover:scale-110 transition-all duration-800"
-      alt=""
+      alt={"imagen que representa " + pageTitle}
     />
     <div
       class="absolute inset-0 bg-black opacity-0 group-hover:opacity-60 transition-opacity duration-800"
@@ -15,10 +15,10 @@ const { pageTitle } = Astro.props;
     </div>
     <div class="absolute inset-0 flex items-center justify-center">
       <h1
-        class="text-6xl text-white opacity-0 group-hover:opacity-100 transition-opacity duration-800 text-center px-4"
+        class="font-montserrat text-6xl text-white opacity-0 group-hover:opacity-100 transition-opacity duration-800 text-center px-4"
       >
         {pageTitle}
       </h1>
     </div>
-  </div>
+  </a>
 </section>
