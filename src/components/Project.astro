@@ -42,10 +42,10 @@ const modalId = `modal-${title.replace(/\s+/g, "-").toLowerCase()}`;
 
 <div
   id={modalId}
-  class="fixed pb-20 inset-0 z-100 hidden items-center justify-center bg-black/80 backdrop-blur-xs"
+  class="modal-backdrop fixed inset-0 z-100 flex items-center justify-center bg-black/80 backdrop-blur-xs pointer-events-none opacity-0"
 >
   <div
-    class="font-montserrat relative max-w-2xl w-full mx-4 bg-neutral-950 border shadow-2xl"
+    class="modal-card font-montserrat relative max-w-2xl w-full mx-4 bg-neutral-950 border shadow-2xl"
   >
     <button
       data-close={modalId}
@@ -75,44 +75,60 @@ const modalId = `modal-${title.replace(/\s+/g, "-").toLowerCase()}`;
   </div>
 </div>
 
+<style>
+  .modal-backdrop {
+    transition: opacity 0.35s ease;
+  }
+  .modal-backdrop.is-visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .modal-card {
+    transform: scale(0.85) translateY(30px);
+    opacity: 0;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+                opacity 0.35s ease;
+  }
+  .modal-backdrop.is-visible .modal-card {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+</style>
+
 <script>
   const nav = document.querySelector("nav");
   const footer = document.querySelector("footer");
 
-  function openModal(modal) {
+  function openModal(modal: HTMLElement) {
     if (!modal) return;
     nav?.classList.add("blur-xs");
     footer?.classList.add("blur-xs");
     document.body.style.overflow = "hidden";
-    modal.classList.remove("hidden", "pb-20");
-    modal.classList.add("flex");
+    // Trigger reflow to ensure transition plays from initial state
+    void modal.offsetHeight;
+    modal.classList.add("is-visible");
   }
 
-  function closeModal(modalId) {
+  function closeModal(modalId: string) {
     const modal = document.getElementById(modalId);
     if (!modal) return;
     nav?.classList.remove("blur-xs");
     footer?.classList.remove("blur-xs");
     document.body.style.overflow = "";
-    modal.classList.add("hidden", "pb-20");
-    modal.classList.remove("flex");
+    modal.classList.remove("is-visible");
   }
 
-  document.querySelectorAll(".project-trigger").forEach((trigger) => {
+  document.querySelectorAll<HTMLElement>(".project-trigger").forEach((trigger) => {
     trigger.addEventListener("click", () => {
       const modalId = trigger.dataset.modal;
       if (!modalId) return;
       const modal = document.getElementById(modalId);
       if (!modal) return;
-      nav?.classList.add("blur-xs");
-      footer?.classList.add("blur-xs");
-      document.body.style.overflow = "hidden";
-      modal.classList.remove("hidden", "pb-20");
-      modal.classList.add("flex");
+      openModal(modal);
     });
   });
 
-  document.querySelectorAll(".close-btn").forEach((btn) => {
+  document.querySelectorAll<HTMLElement>(".close-btn").forEach((btn) => {
     btn.addEventListener("click", () => {
       const modalId = btn.dataset.close;
       if (modalId) {
@@ -121,7 +137,7 @@ const modalId = `modal-${title.replace(/\s+/g, "-").toLowerCase()}`;
     });
   });
 
-  document.querySelectorAll("[id^='modal-']").forEach((modal) => {
+  document.querySelectorAll<HTMLElement>("[id^='modal-']").forEach((modal) => {
     // Mover el modal directamente al body para escapar de cualquier CSS transform del padre
     document.body.appendChild(modal);
 
